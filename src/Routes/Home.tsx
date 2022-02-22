@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "react-query";
 import styled from "styled-components";
+import { useMatch, useNavigate } from "react-router-dom";
+
 import { makeImagePath } from "../utils";
 import { getMovies, IGetMoviesResult } from "../api";
 import { useState } from "react";
@@ -98,14 +100,9 @@ const Movie = styled(motion.div)<{ bgPhoto: string }>`
   background-image: url(${(props) => props.bgPhoto});
   background-size: cover;
   background-position: center center;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  font-size: 20px;
-  font-weight: 600;
-  text-shadow: #111 1px 0 5px;
   justify-self: center;
   position: relative;
+  cursor: pointer;
   &:first-child {
     transform-origin: center left;
   }
@@ -116,15 +113,17 @@ const Movie = styled(motion.div)<{ bgPhoto: string }>`
 
 const MovieInfo = styled(motion.div)`
   padding: 20px;
-  background-color: ${(props) => props.theme.black.lighter};
+  background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
   bottom: 0;
   width: 100%;
+  height: 100%;
   position: absolute;
   display: flex;
   flex-direction: column;
   font-size: 15px;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
 `;
 
 const rowVariants = {
@@ -163,6 +162,9 @@ const MovieInfoVariants = {
 const offset = 6;
 
 function Home() {
+  const navigate = useNavigate();
+  const bigMovieMatch = useMatch<{ movieId: string }>("/movies/:movieId");
+  console.log(bigMovieMatch);
   const { data, isLoading } = useQuery<IGetMoviesResult>(
     ["movies", "nowPlaying"],
     getMovies
@@ -204,6 +206,9 @@ function Home() {
     }
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
+  const onMovieClicked = (movieId: number) => {
+    navigate(`/movies/${movieId}`);
+  };
   return (
     <Wrapper>
       {isLoading ? (
@@ -250,10 +255,11 @@ function Home() {
                         whileHover="hover"
                         initial="normal"
                         transition={{ type: "tween" }}
+                        onClick={() => onMovieClicked(movie.id)}
                         bgPhoto={makeImagePath(movie.backdrop_path)}
                         key={movie.id}
+                        layoutId={movie.id + ""}
                       >
-                        {movie.title}
                         <MovieInfo variants={MovieInfoVariants}>
                           <span>{movie.title}</span>
                           <span>{movie.release_date}</span>
@@ -270,6 +276,24 @@ function Home() {
               </SliderBtn>
             </Slider>
           </Article>
+          <AnimatePresence>
+            {bigMovieMatch ? (
+              <motion.div
+                layoutId={bigMovieMatch.params.movieId}
+                style={{
+                  position: "absolute",
+                  width: "40vw",
+                  height: "80%",
+                  backgroundColor: "red",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  margin: "auto auto",
+                }}
+              ></motion.div>
+            ) : null}
+          </AnimatePresence>
         </>
       )}
     </Wrapper>
