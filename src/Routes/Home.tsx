@@ -106,6 +106,12 @@ const Movie = styled(motion.div)<{ bgPhoto: string }>`
   padding: 5px;
   text-shadow: #111 1px 0 5px;
   justify-self: center;
+  &:first-child {
+    transform-origin: center left;
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
 `;
 
 const rowVariants = {
@@ -118,6 +124,20 @@ const rowVariants = {
   exit: (next: boolean) => ({
     x: next ? window.outerWidth * -1 - 5 : window.outerWidth + 5,
   }),
+};
+
+const MovieVariants = {
+  normal: {
+    scale: 1,
+  },
+  hover: {
+    scale: 1.3,
+    y: -50,
+    transition: {
+      delay: 0.3,
+      duration: 0.3,
+    },
+  },
 };
 
 const offset = 6;
@@ -206,6 +226,10 @@ function Home() {
                     .slice(offset * index, offset * index + offset)
                     .map((movie) => (
                       <Movie
+                        variants={MovieVariants}
+                        whileHover="hover"
+                        initial="normal"
+                        transition={{ type: "tween" }}
                         bgPhoto={makeImagePath(movie.backdrop_path)}
                         key={movie.id}
                       >
