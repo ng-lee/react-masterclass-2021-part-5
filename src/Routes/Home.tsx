@@ -54,26 +54,31 @@ const SliderRow = styled(motion.div)`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
+  gap: 5px;
   position: absolute;
+  
 `;
 
-const Box = styled(motion.div)`
-  background-color: white;
-  height: 200px;
+const Box = styled(motion.div)<{ bgPhoto: string }>`
+  height: 130px;
+  background-image: url(${(props) => props.bgPhoto});
+  background-size: cover;
+  background-position: center center;
 `;
 
 const rowVariants = {
   hidden: {
-    x: window.outerWidth + 10,
+    x: window.outerWidth + 5,
   },
   visible: {
     x: 0,
   },
   exit: {
-    x: window.outerWidth * -1 - 10,
+    x: window.outerWidth * -1 - 5,
   },
 };
+
+const offset = 6;
 
 function Home() {
   const { data, isLoading } = useQuery<IGetMoviesResult>(
@@ -81,35 +86,53 @@ function Home() {
     getMovies
   );
   const [index, setIndex] = useState(0);
-  const increaseIndex = () => setIndex((prev) => prev + 1);
+  const [leaving, setLeaving] = useState(false);
+  const increaseIndex = () => {
+    if (data) {
+      if (leaving) return;
+      else {
+        setLeaving(true);
+        const totalMovies = data?.results.length - 1;
+        const maxIndex = Math.floor(totalMovies / offset) - 1;
+        setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+      }
+    }
+  };
+  const toggleLeaving = () => setLeaving((prev) => !prev);
   return (
     <Wrapper>
       {isLoading ? (
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <Banner bgPhoto={makeImagePath(data?.results[0].backdrop_path)}>
+          <Banner
+            onClick={increaseIndex}
+            bgPhoto={makeImagePath(data?.results[0].backdrop_path)}
+          >
             <BannerText>
               <Title>{data?.results[0].title}</Title>
               <Overview>{data?.results[0].overview}</Overview>
             </BannerText>
           </Banner>
           <Slider>
-            <AnimatePresence>
+            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <SliderRow
                 variants={rowVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                transition={{ type: "tween" }}
+                transition={{ type: "tween", duration: 1 }}
                 key={index}
               >
-                <Box />
-                <Box />
-                <Box />
-                <Box />
-                <Box />
-                <Box />
+                {data?.results
+                  .slice(1)
+                  .slice(offset * index, offset * index + offset)
+                  .map((movie) => (
+                    <Box
+                      bgPhoto={makeImagePath(movie.backdrop_path, "w200")}
+                      key={movie.id}
+                    />
+                  ))}
               </SliderRow>
             </AnimatePresence>
           </Slider>
