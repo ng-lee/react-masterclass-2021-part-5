@@ -31,6 +31,6 @@ export interface IGetMoviesResult {
 
 export function getMovies() {
   return fetch(
-    `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=ko-KR&page=1&region=kr`
+    `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1`
   ).then((res) => res.json());
 }
