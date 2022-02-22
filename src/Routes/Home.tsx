@@ -103,15 +103,28 @@ const Movie = styled(motion.div)<{ bgPhoto: string }>`
   align-items: flex-end;
   font-size: 20px;
   font-weight: 600;
-  padding: 5px;
   text-shadow: #111 1px 0 5px;
   justify-self: center;
+  position: relative;
   &:first-child {
     transform-origin: center left;
   }
   &:last-child {
     transform-origin: center right;
   }
+`;
+
+const MovieInfo = styled(motion.div)`
+  padding: 20px;
+  background-color: ${(props) => props.theme.black.lighter};
+  opacity: 0;
+  bottom: 0;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+  align-items: flex-start;
 `;
 
 const rowVariants = {
@@ -133,10 +146,17 @@ const MovieVariants = {
   hover: {
     scale: 1.3,
     y: -50,
+    zIndex: 1,
     transition: {
       delay: 0.3,
       duration: 0.3,
     },
+  },
+};
+
+const MovieInfoVariants = {
+  hover: {
+    opacity: 1,
   },
 };
 
@@ -234,6 +254,11 @@ function Home() {
                         key={movie.id}
                       >
                         {movie.title}
+                        <MovieInfo variants={MovieInfoVariants}>
+                          <span>{movie.title}</span>
+                          <span>{movie.release_date}</span>
+                          <span>{movie.vote_average}</span>
+                        </MovieInfo>
                       </Movie>
                     ))}
                 </SliderRow>
