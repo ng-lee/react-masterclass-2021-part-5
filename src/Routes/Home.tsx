@@ -77,7 +77,7 @@ const SliderRow = styled(motion.div)`
 
 const SliderBtn = styled.div`
   width: 40px;
-  height: 130px;
+  height: 150px;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
   display: flex;
@@ -143,8 +143,26 @@ const MovieDetail = styled(motion.div)`
   right: 0;
   bottom: 0;
   margin: 0 auto;
+  background-color: ${(props) => props.theme.black.lighter};
+  overflow: hidden;
+  border-radius: 15px;
 `;
 
+const MovieDetailCover = styled.div`
+  width: 100%;
+  height: 400px;
+  background-size: cover;
+  background-position: center center;
+`;
+
+const MovieDetailTitle = styled.div`
+  text-align: center;
+  font-size: 28px;
+`;
+
+const MovieDetailOverview = styled.p`
+  text-align: center;
+`;
 const rowVariants = {
   hidden: (next: boolean) => ({
     x: next ? window.outerWidth + 5 : window.outerWidth * -1 - 5,
@@ -229,6 +247,11 @@ function Home() {
     navigate(`/movies/${movieId}`);
   };
   const onOverlayClicked = () => navigate("/");
+  const clickedMovie =
+    bigMovieMatch?.params.movieId &&
+    data?.results.find(
+      (movie) => String(movie.id) === bigMovieMatch.params.movieId
+    );
   return (
     <Wrapper>
       {isLoading ? (
@@ -303,7 +326,23 @@ function Home() {
                 <MovieDetail
                   style={{ top: scrollY.get() + 50 }}
                   layoutId={bigMovieMatch.params.movieId}
-                ></MovieDetail>
+                >
+                  {clickedMovie && (
+                    <>
+                      <MovieDetailCover
+                        style={{
+                          backgroundImage: `url(${makeImagePath(
+                            clickedMovie.backdrop_path
+                          )})`,
+                        }}
+                      />
+                      <MovieDetailTitle>{clickedMovie.title}</MovieDetailTitle>
+                      <MovieDetailOverview>
+                        {clickedMovie.overview}
+                      </MovieDetailOverview>
+                    </>
+                  )}
+                </MovieDetail>
               </>
             ) : null}
           </AnimatePresence>
