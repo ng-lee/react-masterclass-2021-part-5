@@ -62,10 +62,10 @@ const SearchIcon = styled(motion.svg)`
 const Input = styled(motion.input)`
   transform-origin: right center;
   height: 35px;
-  background-color: ${(props) => props.theme.black.lighter};
   border: none;
   color: white;
   padding: 10px;
+  background-color: transparent,
 `;
 
 const Circle = styled(motion.span)`
@@ -98,6 +98,23 @@ const navVariants = {
   },
 };
 
+const inputVariants = {
+  visible: {
+    width: "250px",
+    opacity: 1,
+  },
+  invisible: {
+    width: 0,
+    opacity: 0,
+  },
+  top: {
+    backgroundColor: "transparent",
+  },
+  scoll: {
+    backgroundColor: `${(props: any) => props.theme.black.lighter}`,
+  },
+};
+
 interface IForm {
   keyword: string;
 }
@@ -111,9 +128,9 @@ function Header() {
   const { scrollY } = useViewportScroll();
   const toggleSearch = () => {
     if (searchOpen) {
-      inputAnimation.start({ width: "250px", opacity: 1 });
+      inputAnimation.start("visible");
     } else {
-      inputAnimation.start({ width: 0, opacity: 0 });
+      inputAnimation.start("invisible");
     }
     setSearchOpen((prev) => !prev);
   };
@@ -121,8 +138,10 @@ function Header() {
     scrollY.onChange(() => {
       if (scrollY.get() > 80) {
         navAnimation.start("scroll");
+        inputAnimation.start("scroll");
       } else {
         navAnimation.start("top");
+        inputAnimation.start("top");
       }
     });
   }, [scrollY, navAnimation]);
@@ -170,6 +189,7 @@ function Header() {
           </SearchIcon>
           <Input
             {...register("keyword", { required: true, minLength: 2 })}
+            variants={inputVariants}
             animate={inputAnimation}
             initial={{ width: 0, opacity: 0 }}
             placeholder="Search for Movie or TV show"

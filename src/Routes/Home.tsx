@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
 import { makeImagePath } from "../utils";
 import { getMovies, IGetMoviesResult } from "../api";
 import ContentSlider from "../Components/ContentSlider";
+import PageBanner from "../Components/PageBanner";
 
 const Wrapper = styled.div`
   background-color: black;
@@ -17,35 +18,6 @@ const Loader = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const Banner = styled.div<{ bgPhoto: string }>`
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  padding: 60px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-    url(${(props) => props.bgPhoto});
-  background-size: cover;
-  margin-bottom: 30px;
-`;
-
-const BannerText = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-`;
-
-const BannerTitle = styled.h2`
-  font-size: 68px;
-  margin-bottom: 20px;
-`;
-
-const Overview = styled.p`
-  font-size: 20px;
-  width: 40%;
-  height: 100px;
-  overflow-y: hidden;
 `;
 
 const Overlay = styled(motion.div)`
@@ -108,12 +80,7 @@ function Home() {
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <Banner bgPhoto={makeImagePath(data?.results[0].backdrop_path)}>
-            <BannerText>
-              <BannerTitle>{data?.results[0].title}</BannerTitle>
-              <Overview>{data?.results[0].overview}</Overview>
-            </BannerText>
-          </Banner>
+          {data && <PageBanner contentData={data?.results} />}
           {data && <ContentSlider contentData={data.results} />}
           <AnimatePresence>
             {bigMovieMatch ? (
