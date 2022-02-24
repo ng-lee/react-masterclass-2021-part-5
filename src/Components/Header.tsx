@@ -65,7 +65,7 @@ const Input = styled(motion.input)`
   border: none;
   color: white;
   padding: 10px;
-  background-color: transparent,
+  background-color: transparent;
 `;
 
 const Circle = styled(motion.span)`

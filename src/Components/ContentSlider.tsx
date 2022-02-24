@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { IGetMoviesResult, IMovie } from "../api";
+import { IMovie } from "../api";
 import { makeImagePath } from "../utils";
 
 const Article = styled.article`
