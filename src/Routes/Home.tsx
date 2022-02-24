@@ -155,14 +155,18 @@ const MovieDetailCover = styled.div`
   background-position: center center;
 `;
 
-const MovieDetailTitle = styled.div`
-  text-align: center;
-  font-size: 28px;
+const MovieDetailDescription = styled.div`
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
 `;
 
-const MovieDetailOverview = styled.p`
-  text-align: center;
-`;
 const rowVariants = {
   hidden: (next: boolean) => ({
     x: next ? window.outerWidth + 5 : window.outerWidth * -1 - 5,
@@ -336,10 +340,10 @@ function Home() {
                           )})`,
                         }}
                       />
-                      <MovieDetailTitle>{clickedMovie.title}</MovieDetailTitle>
-                      <MovieDetailOverview>
-                        {clickedMovie.overview}
-                      </MovieDetailOverview>
+                      <MovieDetailDescription>
+                        <h2>{clickedMovie.title}</h2>
+                        <p>{clickedMovie.overview}</p>
+                      </MovieDetailDescription>
                     </>
                   )}
                 </MovieDetail>
